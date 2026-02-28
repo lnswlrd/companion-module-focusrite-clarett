@@ -63,8 +63,8 @@ export function updateFeedbacks(self) {
 					type: 'dropdown',
 					label: 'Output Pair',
 					choices: (self.outputs || [])
-					.filter((o) => o.stereoName)
-					.map((o, i) => ({ id: String(i), label: o.stereoName })),
+						.filter((o) => o.stereoName)
+						.map((o, i) => ({ id: String(i), label: o.stereoName })),
 					default: '0',
 				},
 			],
@@ -244,7 +244,7 @@ export function updateFeedbacks(self) {
 				color: combineRgb(255, 255, 255),
 			},
 			options: [],
-			callback: (feedback) => {
+			callback: (_feedback) => {
 				const itemId = self.monitoring?.dim
 				if (!itemId) return false
 				const item = self.items.get(itemId)

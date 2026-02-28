@@ -36,7 +36,7 @@
 
 import { EventEmitter } from 'events'
 import net from 'net'
-import { parseStringPromise, Builder } from 'xml2js'
+import { parseStringPromise } from 'xml2js'
 
 export class FocusriteClient extends EventEmitter {
 	constructor(options = {}) {
@@ -304,7 +304,10 @@ export class FocusriteClient extends EventEmitter {
 
 				this.devices.set(deviceId, deviceInfo)
 				this.emit('device-arrived', deviceInfo)
-				this.emit('debug', `Device arrived: ${deviceInfo.name} (${deviceId}) - ${deviceInfo.hardwareInputs.length} inputs, ${deviceInfo.mixes.length} mixes, ${deviceInfo.outputs.length} outputs`)
+				this.emit(
+					'debug',
+					`Device arrived: ${deviceInfo.name} (${deviceId}) - ${deviceInfo.hardwareInputs.length} inputs, ${deviceInfo.mixes.length} mixes, ${deviceInfo.outputs.length} outputs`,
+				)
 
 				// Auto-subscribe to device
 				this.subscribeDevice(deviceId)
@@ -572,7 +575,7 @@ export class FocusriteClient extends EventEmitter {
 						name: item.$.name || itemId,
 						type: item.$.type || 'unknown',
 						min: item.$.min,
-						max: item.$.max
+						max: item.$.max,
 					})
 				}
 			}
@@ -594,7 +597,7 @@ export class FocusriteClient extends EventEmitter {
 							name: child.$.name || key,
 							type: child.$.type || key,
 							min: child.$.min,
-							max: child.$.max
+							max: child.$.max,
 						})
 					}
 				}

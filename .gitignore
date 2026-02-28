@@ -1,3 +1,6 @@
 node_modules/
+pkg/
 *.log
 .DS_Store
+package-lock.json
+.yarn/install-state.gz

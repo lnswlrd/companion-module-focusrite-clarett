@@ -9,7 +9,8 @@
   "bugs": "https://github.com/lnswlrd/companion-module-focusrite-clarett/issues",
   "maintainers": [
     {
-      "name": "Linus Wileryd"
+      "name": "Linus Wileryd",
+      "email": "linus@cutup.se"
     }
   ],
   "legacyIds": [],

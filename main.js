@@ -90,7 +90,10 @@ class FocusriteClarettInstance extends InstanceBase {
 				this.inputSourceControls = device.inputSourceControls || []
 				this.monitoring = device.monitoring || {}
 
-				this.log('info', `Found ${this.hardwareInputs.length} hardware inputs, ${this.mixes.length} mixes, ${this.outputs.length} outputs`)
+				this.log(
+					'info',
+					`Found ${this.hardwareInputs.length} hardware inputs, ${this.mixes.length} mixes, ${this.outputs.length} outputs`,
+				)
 
 				this.parseDeviceStructure()
 				this.updateVariableValues()

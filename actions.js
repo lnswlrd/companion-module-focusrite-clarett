@@ -98,8 +98,8 @@ export function updateActions(self) {
 					type: 'dropdown',
 					label: 'Output Pair',
 					choices: (self.outputs || [])
-					.filter((o) => o.stereoName)
-					.map((o, i) => ({ id: String(i), label: o.stereoName })),
+						.filter((o) => o.stereoName)
+						.map((o, i) => ({ id: String(i), label: o.stereoName })),
 					default: '0',
 				},
 				{
