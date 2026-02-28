@@ -547,6 +547,29 @@ export class FocusriteClient extends EventEmitter {
 			}
 		}
 
+		// Also capture named control elements that have both id and value (e.g. <air id="X" value="Y"/>, <dim>, <mode>, <gain>, <mute>)
+		for (const key of Object.keys(element)) {
+			if (key === '$' || key === 'item') continue
+			const children = Array.isArray(element[key]) ? element[key] : [element[key]]
+			for (const child of children) {
+				if (child && typeof child === 'object' && child.$ && child.$.id !== undefined && child.$.value !== undefined) {
+					const itemId = child.$.id
+					if (!itemsMap.has(itemId)) {
+						const childPath = prefix ? `${prefix}/${key}` : key
+						itemsMap.set(itemId, {
+							id: itemId,
+							path: childPath,
+							value: child.$.value,
+							name: child.$.name || key,
+							type: child.$.type || key,
+							min: child.$.min,
+							max: child.$.max
+						})
+					}
+				}
+			}
+		}
+
 		// Recurse into child elements
 		for (const key of Object.keys(element)) {
 			if (key !== '$' && key !== 'item' && typeof element[key] === 'object') {
@@ -574,10 +597,14 @@ export class FocusriteClient extends EventEmitter {
 				const itemId = item.$.id
 				const value = item.$.value
 
-				// Update local state
+				// Update local state (add item if not yet known)
 				const device = this.devices.get(deviceId)
-				if (device && device.items.has(itemId)) {
-					device.items.get(itemId).value = value
+				if (device) {
+					if (device.items.has(itemId)) {
+						device.items.get(itemId).value = value
+					} else {
+						device.items.set(itemId, { id: itemId, value, name: itemId, type: 'unknown' })
+					}
 				}
 
 				this.emit('value-changed', { deviceId, itemId, value })

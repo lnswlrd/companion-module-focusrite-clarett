@@ -222,10 +222,14 @@ class FocusriteClarettInstance extends InstanceBase {
 	// Action: Toggle a boolean value
 	toggleValue(itemId) {
 		const item = this.items.get(itemId)
-		if (item) {
-			const currentValue = item.value === 'true' || item.value === '1'
-			this.setValue(itemId, currentValue ? 'false' : 'true')
+		if (!item) {
+			// Item not yet in map – default to false - toggle to true
+			this.log('warn', `toggleValue: item ${itemId} not in items map, assuming false`)
+			this.setValue(itemId, 'true')
+			return
 		}
+		const currentValue = item.value === 'true' || item.value === '1'
+		this.setValue(itemId, currentValue ? 'false' : 'true')
 	}
 
 	getConfigFields() {
