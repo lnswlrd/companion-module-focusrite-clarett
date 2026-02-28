@@ -1,0 +1,40 @@
+{
+  "id": "focusrite-clarett",
+  "name": "Focusrite Clarett",
+  "shortname": "Clarett",
+  "description": "Control Focusrite Clarett audio interfaces via FocusriteControlServer",
+  "version": "1.0.0",
+  "license": "MIT",
+  "repository": "git+https://github.com/lnswlrd/companion-module-focusrite-clarett.git",
+  "bugs": "https://github.com/lnswlrd/companion-module-focusrite-clarett/issues",
+  "maintainers": [
+    {
+      "name": "Linus Wileryd"
+    }
+  ],
+  "legacyIds": [],
+  "runtime": {
+    "type": "node18",
+    "api": "nodejs-ipc",
+    "apiVersion": "0.0.0",
+    "entrypoint": "../main.js"
+  },
+  "manufacturer": "Focusrite",
+  "products": [
+    "Clarett 8PreX",
+    "Clarett 8Pre",
+    "Clarett 4Pre",
+    "Clarett 2Pre",
+    "Clarett+ 8Pre",
+    "Clarett+ 4Pre",
+    "Clarett+ 2Pre"
+  ],
+  "keywords": [
+    "Audio",
+    "Interface",
+    "Focusrite",
+    "Clarett",
+    "Mixer",
+    "Thunderbolt"
+  ]
+}

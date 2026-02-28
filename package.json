@@ -1,0 +1,29 @@
+{
+  "name": "companion-module-focusrite-clarett",
+  "version": "1.0.0",
+  "author": "Linus Wileryd",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "format": "prettier -w .",
+    "lint": "eslint ."
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lnswlrd/companion-module-focusrite-clarett.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lnswlrd/companion-module-focusrite-clarett/issues"
+  },
+  "homepage": "https://github.com/lnswlrd/companion-module-focusrite-clarett#readme",
+  "dependencies": {
+    "@companion-module/base": "^1.12.1",
+    "xml2js": "^0.6.2"
+  },
+  "devDependencies": {
+    "@companion-module/tools": "^2.0.3",
+    "prettier": "^3.0.3"
+  },
+  "prettier": "@companion-module/tools/.prettierrc.json"
+}
