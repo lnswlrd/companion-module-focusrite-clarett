@@ -434,28 +434,59 @@ export class FocusriteClient extends EventEmitter {
 	}
 
 	/**
-	 * Parse line outputs with volume/mute controls (scoped to <outputs> section)
+	 * Parse outputs with volume/mute controls (scoped to <outputs> section).
+	 * Handles analogue, S/PDIF, ADAT, loopback and any other output types.
+	 * Detects stereo pairs via stereo-name attribute; routes right-channel
+	 * controls to the left channel's IDs (server only responds to left channel).
 	 */
 	parseOutputs(xml, deviceInfo) {
 		const outSectionMatch = xml.match(/<outputs[^>]*>([\s\S]*?)<\/outputs>/)
-		if (!outSectionMatch) return
+		if (!outSectionMatch) {
+			this.emit('debug', 'parseOutputs: no <outputs> section found')
+			return
+		}
 		const outXml = outSectionMatch[1]
 
-		const analogueRegex = /<analogue[^>]+id="(\d+)"[^>]*name="([^"]*)"[^>]*>([\s\S]*?)<\/analogue>/g
+		const outputElementRegex = /<([\w-]+)([^>]*)>([\s\S]*?)<\/\1>/g
 		let match
-		while ((match = analogueRegex.exec(outXml)) !== null) {
-			const name = match[2]
+		let index = 0
+		let lastStereoPairMute = null
+		let lastStereoPairVolume = null
+		while ((match = outputElementRegex.exec(outXml)) !== null) {
+			const attrs = match[2]
 			const content = match[3]
 
+			const nameMatch = attrs.match(/name="([^"]*)"/)
+			if (!nameMatch) continue
+
+			const name = nameMatch[1]
 			if (!name || name.trim() === '') continue
 
-			const output = { id: match[1], name: name }
+			const output = { id: String(index), name: name }
+			index++
+
+			// Mark monitor outputs (stereo pair controlled via hardware-controls mute)
+			if (attrs.match(/monitor="true"/)) output.monitor = true
+
+			// Store stereo pair name and detect right channel (stereo-name="" = right/secondary)
+			const stereoNameMatch = attrs.match(/stereo-name="([^"]*)"/)
+			const isRightChannel = stereoNameMatch && stereoNameMatch[1] === ''
+			if (stereoNameMatch && stereoNameMatch[1]) output.stereoName = stereoNameMatch[1]
 
 			const gainMatch = content.match(/<gain[^>]+id="(\d+)"/)
 			if (gainMatch) output.volume = gainMatch[1]
 
 			const muteMatch = content.match(/<mute[^>]+id="(\d+)"/)
 			if (muteMatch) output.mute = muteMatch[1]
+
+			// Route right channel to left channel's controls (server ignores right channel)
+			if (isRightChannel) {
+				if (lastStereoPairMute) output.mute = lastStereoPairMute
+				if (lastStereoPairVolume) output.volume = lastStereoPairVolume
+			} else {
+				lastStereoPairMute = output.mute || null
+				lastStereoPairVolume = output.volume || null
+			}
 
 			if (output.volume || output.mute) deviceInfo.outputs.push(output)
 		}
@@ -547,12 +578,12 @@ export class FocusriteClient extends EventEmitter {
 			}
 		}
 
-		// Also capture named control elements that have both id and value (e.g. <air id="X" value="Y"/>, <dim>, <mode>, <gain>, <mute>)
+		// Also capture named control elements that have id (e.g. <air id="X" value="Y"/>, <mute id="X"/>, <dim id="X"/>)
 		for (const key of Object.keys(element)) {
 			if (key === '$' || key === 'item') continue
 			const children = Array.isArray(element[key]) ? element[key] : [element[key]]
 			for (const child of children) {
-				if (child && typeof child === 'object' && child.$ && child.$.id !== undefined && child.$.value !== undefined) {
+				if (child && typeof child === 'object' && child.$ && child.$.id !== undefined) {
 					const itemId = child.$.id
 					if (!itemsMap.has(itemId)) {
 						const childPath = prefix ? `${prefix}/${key}` : key

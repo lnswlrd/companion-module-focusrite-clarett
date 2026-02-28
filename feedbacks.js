@@ -60,17 +60,18 @@ export function updateFeedbacks(self) {
 			options: [
 				{
 					id: 'channel',
-					type: 'number',
-					label: 'Output Channel',
-					default: 1,
-					min: 1,
-					max: 10,
+					type: 'dropdown',
+					label: 'Output Pair',
+					choices: (self.outputs || [])
+					.filter((o) => o.stereoName)
+					.map((o, i) => ({ id: String(i), label: o.stereoName })),
+					default: '0',
 				},
 			],
 			callback: (feedback) => {
-				const ch = feedback.options.channel - 1
-				const output = self.outputs?.[ch]
-				const itemId = output?.mute
+				const pairs = (self.outputs || []).filter((o) => o.stereoName)
+				const output = pairs[Number(feedback.options.channel)]
+				const itemId = output?.monitor ? self.monitoring?.mute : output?.mute
 				if (!itemId) return false
 				const item = self.items.get(itemId)
 				return item && (item.value === 'true' || item.value === '1')

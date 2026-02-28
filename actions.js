@@ -95,11 +95,12 @@ export function updateActions(self) {
 			options: [
 				{
 					id: 'channel',
-					type: 'number',
-					label: 'Output Channel',
-					default: 1,
-					min: 1,
-					max: 10,
+					type: 'dropdown',
+					label: 'Output Pair',
+					choices: (self.outputs || [])
+					.filter((o) => o.stereoName)
+					.map((o, i) => ({ id: String(i), label: o.stereoName })),
+					default: '0',
 				},
 				{
 					id: 'state',
@@ -114,12 +115,12 @@ export function updateActions(self) {
 				},
 			],
 			callback: async (event) => {
-				const ch = event.options.channel - 1
-				const output = self.outputs?.[ch]
-				const itemId = output?.mute
+				const pairs = (self.outputs || []).filter((o) => o.stereoName)
+				const output = pairs[Number(event.options.channel)]
+				const itemId = output?.monitor ? self.monitoring?.mute : output?.mute
 
 				if (!itemId) {
-					self.log('warn', `No mute control for output ${event.options.channel}`)
+					self.log('warn', `No mute control for output pair ${event.options.channel}`)
 					return
 				}
 

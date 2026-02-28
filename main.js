@@ -213,6 +213,10 @@ class FocusriteClarettInstance extends InstanceBase {
 	setValue(itemId, value) {
 		this.log('debug', `setValue called: itemId=${itemId} value=${value} deviceId=${this.deviceId}`)
 		if (this.client && this.deviceId) {
+			// Update local state optimistically since server may not echo back
+			if (this.items.has(itemId)) {
+				this.items.get(itemId).value = value
+			}
 			this.client.setValue(this.deviceId, itemId, value)
 		} else {
 			this.log('warn', `setValue failed: client=${!!this.client} deviceId=${this.deviceId}`)
@@ -223,8 +227,8 @@ class FocusriteClarettInstance extends InstanceBase {
 	toggleValue(itemId) {
 		const item = this.items.get(itemId)
 		if (!item) {
-			// Item not yet in map – default to false - toggle to true
-			this.log('warn', `toggleValue: item ${itemId} not in items map, assuming false`)
+			// Item not yet in map – assume false, toggle to true
+			this.log('debug', `toggleValue: item ${itemId} not in items map, assuming false`)
 			this.setValue(itemId, 'true')
 			return
 		}
