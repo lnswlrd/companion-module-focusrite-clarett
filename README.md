@@ -1,8 +1,9 @@
 # companion-module-focusrite-clarett
 
-[Bitfocus Companion](https://bitfocus.io/companion) module for controlling **Focusrite Clarett** audio interfaces.
+> **This was the original development repository for this module.**
+> It has since moved to [bitfocus/companion-module-focusrite-clarett](https://github.com/bitfocus/companion-module-focusrite-clarett) where it is now officially maintained.
 
-> **This was the original development repository for this module.** It has since moved to [bitfocus/companion-module-focusrite-clarett](https://github.com/bitfocus/companion-module-focusrite-clarett) where it is now officially maintained.
+[Bitfocus Companion](https://bitfocus.io/companion) module for controlling **Focusrite Clarett** audio interfaces.
 
 > **Important:** This module does **not** communicate directly with the audio interface hardware. Instead it connects to **FocusriteControlServer** — a background service that is installed as part of Focusrite's driver/software package and runs on the same computer the interface is connected to. Companion sends TCP/XML commands to that service, which in turn controls the hardware.
 
